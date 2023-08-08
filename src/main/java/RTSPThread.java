@@ -14,9 +14,9 @@ class RTSPThread extends Thread {
 
     public static void searchPositions(String position, Mat imgRegion){
         // Extract the position, size, and color for teamName1
-        String Position = section.get(position + "Position");
-        String Size = section.get(position + "Size");
-        String Color = section.get(position + "Color");
+        String Position = sectionData.get(position + "Position");
+        String Size = sectionData.get(position + "Size");
+        String Color = sectionData.get(position + "Color");
 
         // Parse the position and size to get the x, y, width, and height
         int x = Integer.parseInt(Position.substring(1, Position.indexOf('y')));
@@ -24,22 +24,22 @@ class RTSPThread extends Thread {
         int width1 = Integer.parseInt(Size.substring(0, Size.indexOf('x')));
         int height1 = Integer.parseInt(Size.substring(Size.indexOf('x') + 1));
 
-        // Create a submat for the teamName1 section
-        Mat teamName1Section = imgRegion.submat(y, y + height1, x, x + width1);
+        // Create a submat for the position section
+        Mat section = imgRegion.submat(y, y + height1, x, x + width1);
 
         // Convert the teamName1 section to a BufferedImage for OCR
         int type1 = BufferedImage.TYPE_BYTE_GRAY;
-        BufferedImage teamName1Image = new BufferedImage(teamName1Section.width(), teamName1Section.height(), type1);
-        teamName1Section.get(0, 0, ((DataBufferByte) teamName1Image.getRaster().getDataBuffer()).getData());
+        BufferedImage teamName1Image = new BufferedImage(section.width(), section.height(), type1);
+        section.get(0, 0, ((DataBufferByte) teamName1Image.getRaster().getDataBuffer()).getData());
 
-        // Perform OCR on the teamName1 section using Tesseract
-        ITesseract tesseract1 = new Tesseract();
-        tesseract1.setDatapath("/opt/homebrew/Cellar/tesseract/5.3.1_1/share/tessdata");
-        tesseract1.setLanguage("hrv");
+        // Perform OCR on the position section using Tesseract
+        ITesseract tesseract = new Tesseract();
+        tesseract.setDatapath("/opt/homebrew/Cellar/tesseract/5.3.1_1/share/tessdata");
+        tesseract.setLanguage("hrv");
 
         try {
-            String ocrResult = tesseract1.doOCR(teamName1Image);
-            System.out.println("OCR result for teamName1: " + ocrResult);
+            String ocrResult = tesseract.doOCR(teamName1Image);
+            System.out.println("OCR result for" + position +": " + ocrResult);
         } catch (TesseractException e) {
             throw new RuntimeException(e);
         }
@@ -47,28 +47,28 @@ class RTSPThread extends Thread {
     public RTSPThread(String rtspUrl) {
         this.rtspUrl = rtspUrl;
     }
-    static Map<String, String> section = new HashMap<>();
+    static Map<String, String> sectionData = new HashMap<>();
     public List<String> positions = List.of("teamName1", "teamScore1","teamName2", "teamScore2", "time");
     @Override
     public void run() {
-        section.put("threshold", "0.65");
-        section.put("expectedGfxX", "460");
-        section.put("expectedGfxY", "46");
-        section.put("teamName1Position", "x12y2");
-        section.put("teamName1Size", "68x34");
-        section.put("teamName1Color", "black");
-        section.put("teamScore1Position", "x98y6");
-        section.put("teamScore1Size", "34x30");
-        section.put("teamScore1Color", "white");
-        section.put("teamName2Position", "x280y2");
-        section.put("teamName2Size", "68x34");
-        section.put("teamName2Color", "black");
-        section.put("teamScore2Position", "x228y6");
-        section.put("teamScore2Size", "34x30");
-        section.put("teamScore2Color", "white");
-        section.put("timePosition", "x156y26");
-        section.put("timeSize", "50x18");
-        section.put("timeColor", "white");
+        sectionData.put("threshold", "0.65");
+        sectionData.put("expectedGfxX", "460");
+        sectionData.put("expectedGfxY", "46");
+        sectionData.put("teamName1Position", "x12y2");
+        sectionData.put("teamName1Size", "68x34");
+        sectionData.put("teamName1Color", "black");
+        sectionData.put("teamScore1Position", "x98y6");
+        sectionData.put("teamScore1Size", "34x30");
+        sectionData.put("teamScore1Color", "white");
+        sectionData.put("teamName2Position", "x280y2");
+        sectionData.put("teamName2Size", "68x34");
+        sectionData.put("teamName2Color", "black");
+        sectionData.put("teamScore2Position", "x228y6");
+        sectionData.put("teamScore2Size", "34x30");
+        sectionData.put("teamScore2Color", "white");
+        sectionData.put("timePosition", "x156y26");
+        sectionData.put("timeSize", "50x18");
+        sectionData.put("timeColor", "white");
 
 
 
@@ -115,17 +115,17 @@ class RTSPThread extends Thread {
         Imgproc.cvtColor(exampleImage, grayExampleImage, Imgproc.COLOR_BGR2GRAY);
         int width = grayExampleImage.width();
         int height = grayExampleImage.height();
-        Mat searchArea = frame.submat(Integer.parseInt(section.get("expectedGfxY")), Integer.parseInt(section.get("expectedGfxY")) + height, Integer.parseInt(section.get("expectedGfxX")), Integer.parseInt(section.get("expectedGfxX")) + width);
+        Mat searchArea = frame.submat(Integer.parseInt(sectionData.get("expectedGfxY")), Integer.parseInt(sectionData.get("expectedGfxY")) + height, Integer.parseInt(sectionData.get("expectedGfxX")), Integer.parseInt(sectionData.get("expectedGfxX")) + width);
         Mat graySearchArea = new Mat();
         Imgproc.cvtColor(searchArea, graySearchArea, Imgproc.COLOR_BGR2GRAY);
         Mat matchResult = new Mat();
         Imgproc.matchTemplate(graySearchArea, grayExampleImage, matchResult, Imgproc.TM_CCOEFF_NORMED);
         Core.MinMaxLocResult mmr = Core.minMaxLoc(matchResult);
         Point matchLoc = mmr.maxLoc;
-        if (mmr.maxVal > Double.parseDouble(section.get("threshold"))) {
+        if (mmr.maxVal > Double.parseDouble(sectionData.get("threshold"))) {
             System.out.println(mmr.maxVal + " found in " + rtspUrl);
-            Point pt1 = new Point(matchLoc.x + Integer.parseInt(section.get("expectedGfxX")), matchLoc.y + Integer.parseInt(section.get("expectedGfxY")));
-            Point pt2 = new Point(matchLoc.x + Integer.parseInt(section.get("expectedGfxX")) + width, matchLoc.y + Integer.parseInt(section.get("expectedGfxY")) + height);
+            Point pt1 = new Point(matchLoc.x + Integer.parseInt(sectionData.get("expectedGfxX")), matchLoc.y + Integer.parseInt(sectionData.get("expectedGfxY")));
+            Point pt2 = new Point(matchLoc.x + Integer.parseInt(sectionData.get("expectedGfxX")) + width, matchLoc.y + Integer.parseInt(sectionData.get("expectedGfxY")) + height);
             Imgproc.rectangle(frame, pt1, pt2, new Scalar(0, 0, 255), 2);
 
             // Crop the search area to just the region where the image is found
@@ -135,25 +135,7 @@ class RTSPThread extends Thread {
             int type = BufferedImage.TYPE_BYTE_GRAY;
             BufferedImage image = new BufferedImage(imageRegion.width(), imageRegion.height(), type);
             imageRegion.get(0, 0, ((DataBufferByte) image.getRaster().getDataBuffer()).getData());
-
-            // Perform OCR on the cropped region using Tesseract
-            ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath("/opt/homebrew/Cellar/tesseract/5.3.1_1/share/tessdata");
-            tesseract.setLanguage("hrv");
-
-            /*searchArea
-            for(int i = 0; i < 5; i++){
-                int x = Integer.parseInt(section.get("teamName1Position").substring(1, section.get("teamName1Position").indexOf('y')));
-
-            }
-            Mat subsection = imageRegion.submat(y, y + height, x, x + width);
-*/
-            try {
-                String ocrResult = tesseract.doOCR(image);
-                System.out.println("OCR result: " + ocrResult);
-            } catch (TesseractException e) {
-                throw new RuntimeException(e);
-            }
+            
 
             for(int i = 0; i < positions.size(); i++){
                 searchPositions(positions.get(i), imageRegion);
