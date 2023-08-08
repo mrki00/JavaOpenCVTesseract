@@ -12,7 +12,7 @@
     <content url="file:///opt/homebrew/Cellar/opencv/4.7.0_2/share/java" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar:///opt/homebrew/Cellar/opencv/4.7.0_2/share/java/opencv4/opencv-470.jar!/" />
@@ -31,7 +31,7 @@
         <jarDirectory url="file:///opt/homebrew/Cellar/opencv/4.7.0_2/share/java/opencv4" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.tess4j:tess4j:5.6.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.jai-imageio:jai-imageio-core:1.4.0" level="project" />
@@ -46,5 +46,31 @@
     <orderEntry type="library" name="Maven: org.jboss:jboss-vfs:3.2.17.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.1.4.GA" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:2.0.6" level="project" />
+    <orderEntry type="library" name="opencv-480" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar:///opt/homebrew/Cellar/opencv/4.8.0/share/java/opencv4/opencv-480.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file:///opt/homebrew/Cellar/opencv/4.8.0/share/java/opencv4" />
+        </NATIVE>
+        <SOURCES>
+          <root url="jar:///opt/homebrew/Cellar/opencv/4.8.0/share/java/opencv4/opencv-480.jar!/" />
+          <root url="jar:///opt/homebrew/Cellar/opencv/4.8.0/share/java/opencv4/opencv-480.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="tess">
+        <CLASSES />
+        <JAVADOC />
+        <NATIVE>
+          <root url="file:///opt/homebrew/Cellar/tesseract/5.3.1_1/lib" />
+        </NATIVE>
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
