@@ -1,0 +1,20 @@
+{
+  "threshold": "0.65",
+  "expectedGfxX": "460",
+  "expectedGfxY": "46",
+  "teamName1Position": "x12y2",
+  "teamName1Size": "68x34",
+  "teamName1Color": "black",
+  "teamScore1Position": "x98y6",
+  "teamScore1Size": "34x30",
+  "teamScore1Color": "white",
+  "teamName2Position": "x280y2",
+  "teamName2Size": "68x34",
+  "teamName2Color": "black",
+  "teamScore2Position": "x228y6",
+  "teamScore2Size": "34x30",
+  "teamScore2Color": "white",
+  "timePosition": "x156y26",
+  "timeSize": "50x18",
+  "timeColor": "white"
+}

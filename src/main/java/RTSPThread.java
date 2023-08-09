@@ -8,11 +8,13 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 
 class RTSPThread extends Thread {
     private String rtspUrl;
 
-    public static void searchPositions(String position, Mat imgRegion){
+    public void searchPositions(String position, Mat imgRegion){
         // Extract the position, size, and color for teamName1
         String Position = sectionData.get(position + "Position");
         String Size = sectionData.get(position + "Size");
@@ -47,28 +49,42 @@ class RTSPThread extends Thread {
     public RTSPThread(String rtspUrl) {
         this.rtspUrl = rtspUrl;
     }
-    static Map<String, String> sectionData = new HashMap<>();
+    Map<String, String> sectionData = new HashMap<>();
     public List<String> positions = List.of("teamName1", "teamScore1","teamName2", "teamScore2", "time");
+
+    public void loadData(){
+        try{
+            File jsonFile = new File("src/main/java/config.json"); // Replace with your file path
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            sectionData = objectMapper.readValue(jsonFile, HashMap.class);
+            System.out.println(sectionData);
+        } catch (Exception e) {
+            System.out.println(e);
+            sectionData.put("threshold", "0.65");
+            sectionData.put("expectedGfxX", "460");
+            sectionData.put("expectedGfxY", "46");
+            sectionData.put("teamName1Position", "x12y2");
+            sectionData.put("teamName1Size", "68x34");
+            sectionData.put("teamName1Color", "black");
+            sectionData.put("teamScore1Position", "x98y6");
+            sectionData.put("teamScore1Size", "34x30");
+            sectionData.put("teamScore1Color", "white");
+            sectionData.put("teamName2Position", "x280y2");
+            sectionData.put("teamName2Size", "68x34");
+            sectionData.put("teamName2Color", "black");
+            sectionData.put("teamScore2Position", "x228y6");
+            sectionData.put("teamScore2Size", "34x30");
+            sectionData.put("teamScore2Color", "white");
+            sectionData.put("timePosition", "x156y26");
+            sectionData.put("timeSize", "50x18");
+            sectionData.put("timeColor", "white");
+            System.out.println(sectionData);
+        }
+    }
     @Override
     public void run() {
-        sectionData.put("threshold", "0.65");
-        sectionData.put("expectedGfxX", "460");
-        sectionData.put("expectedGfxY", "46");
-        sectionData.put("teamName1Position", "x12y2");
-        sectionData.put("teamName1Size", "68x34");
-        sectionData.put("teamName1Color", "black");
-        sectionData.put("teamScore1Position", "x98y6");
-        sectionData.put("teamScore1Size", "34x30");
-        sectionData.put("teamScore1Color", "white");
-        sectionData.put("teamName2Position", "x280y2");
-        sectionData.put("teamName2Size", "68x34");
-        sectionData.put("teamName2Color", "black");
-        sectionData.put("teamScore2Position", "x228y6");
-        sectionData.put("teamScore2Size", "34x30");
-        sectionData.put("teamScore2Color", "white");
-        sectionData.put("timePosition", "x156y26");
-        sectionData.put("timeSize", "50x18");
-        sectionData.put("timeColor", "white");
+        loadData();
 
 
 
